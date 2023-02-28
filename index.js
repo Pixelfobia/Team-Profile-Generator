@@ -13,3 +13,18 @@ const render = require("./src/page-template.js");
 
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
+
+let team = [];
+
+startProgram()
+async function startProgram() {
+
+	team.push(new Manager("Jane", 1, "test@test.com"))
+	team.push(new Engineer("Sergio", 1, "test@test.com"))
+	team.push(new Engineer("Lenka", 1, "test@test.com"))
+	team.push(new Intern("Angela", 1, "test@test.com"))
+
+	let htmlDoc = render(team)
+
+	await fs.writeFile(outputPath, htmlDoc);
+}

@@ -16,15 +16,123 @@ const render = require("./src/page-template.js");
 
 let team = [];
 
-startProgram()
 async function startProgram() {
+	let { name, id, email, officeNumber } = await inquirer
+		.prompt([
+			{
+				type: 'input',
+				name: 'name',
+				message: "What is the manager's name?",
+			},
+			{
+				type: 'input',
+				name: 'id',
+				message: "What is the manager's employee ID number?"
+			},
+			{
+				type: 'input',
+				name: 'email',
+				message: "What is the manager's email address?"
+			},
+			{
+				type: 'input',
+				name: 'officeNumber',
+				message: "What is the manager's office number?"
+			}
+		])
+	team.push(new Manager(name, id, email, officeNumber))
+	userChoice()
+}
+startProgram()
 
-	team.push(new Manager("Jane", 1, "test@test.com"))
-	team.push(new Engineer("Sergio", 1, "test@test.com"))
-	team.push(new Engineer("Lenka", 1, "test@test.com"))
-	team.push(new Intern("Angela", 1, "test@test.com"))
+// Add other profiles or finish
+function userChoice() {
+	inquirer.prompt([
+		{
+			type: "list",
+			message: "Add Team Member?",
+			name: "choice",
+			choices: ["Engineer", "Intern", "Finish Building Team"]
+		}
+	]).then((responses) => {
+		console.log(responses);
+		// Add engineer
+		if (responses.choice === "Engineer") {
+			console.log('engineer');
+			engineer()
+		}
 
-	let htmlDoc = render(team)
+		// Add intern
+		if (responses.choice === "Intern") {
+			console.log('intern');
+			intern()
+		}
 
-	await fs.writeFile(outputPath, htmlDoc);
+		// Generating HTML 
+		if (responses.choice === "Finish Building Team") {
+			let htmlDoc = render(team)
+			fs.writeFile(outputPath, htmlDoc)
+		}
+	})
+}
+
+
+// Engineer's details
+function engineer() {
+	inquirer.prompt([
+		{
+			type: 'input',
+			name: 'name',
+			message: "What is engineer's name?",
+		},
+		{
+			type: 'input',
+			name: 'id',
+			message: "Please enter the engineer's employe ID:"
+		},
+		{
+			type: 'input',
+			name: 'email',
+			message: "Please enter the engineer's email address:"
+		},
+		{
+			type: 'input',
+			name: 'gitHub',
+			message: "Please enter the engineer's GitHub username:"
+		},
+	]).then((data) => {
+		let newEngineer = new Engineer(data.name, data.id, data.email, data.gitHub)
+		team.push(newEngineer)
+		userChoice()
+	})
+}
+
+// Intern's detail
+function intern() {
+	inquirer.prompt([
+		{
+			type: 'input',
+			name: 'name',
+			message: "What is the intern's name?",
+		},
+		{
+			type: 'input',
+			name: 'id',
+			message: "What is the intern's ID number?"
+		},
+		{
+			type: 'input',
+			name: 'email',
+			message: "Please enter the intern's email address:"
+		},
+		{
+			type: 'input',
+			name: 'schoolName',
+			message: "Please enter the intern's school name:"
+		},
+	]).then((data) => {
+		let newIntern = new Intern(data.name, data.id, data.email, data.schoolName)
+		team.push(newIntern)
+		userChoice()
+	})
 }
